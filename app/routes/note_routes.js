@@ -27,6 +27,23 @@ module.exports = function(app, db) {
       }
     });
   });
+  // UPDATE NOTE
+  app.put('/notes/:id', (req, res) => {
+    const id = req.params.id;
+    const details = { '_id': new ObjectID(id) };
+    if(req.body.body && req.body.title) {
+      const note = { text: req.body.body, title: req.body.title };
+      db.collection('notes').update(details, note, (err, result) => {
+        if(err) {
+          res.send({'error': 'An error has occurred'});
+        } else {
+          res.send(note);
+        }
+      });
+    } else {
+      res.send({'error': 'Please add a body and title key/value pair to the PUT request'});
+    }
+  });
   // DELETE NOTE
   app.delete('/notes/:id', (req, res) => {
     const id = req.params.id;
@@ -37,6 +54,6 @@ module.exports = function(app, db) {
       } else {
         res.send('Note ' + id + ' deleted!');
       }
-    })
-  })
+    });
+  });
 };
